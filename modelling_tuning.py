@@ -5,26 +5,20 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import classification_report, accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
-from automate import cap_outlier,del_missing
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
 import joblib
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
 
-mlflow.set_experiment("Star Classification Project")
+mlflow.set_experiment("Stellar Classification Project")
 
-path = "./MSML Project/"
-file_path = path + "star_classification-headers.csv"
-save_path = path + "pipeline.joblib"
+path = "./MSMLGit/WorkflowCI/"
+file_path = path + "StellarClassification/"
 
-data = pd.read_csv(path + "star_classification.csv")
-X = data.drop(columns=["class"])
-y = data["class"]
-
-X_train_raw, X_test_raw, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-preprocessor = joblib.load(path + "pipeline.joblib")
-X_train = preprocessor.transform(X_train_raw)
-X_test = preprocessor.transform(X_test_raw)
+X_train = pd.read_csv(file_path + "X_train.csv")
+X_test = pd.read_csv(file_path + "X_test.csv")
+y_train = pd.read_csv(file_path + "y_train.csv").squeeze()
+y_test = pd.read_csv(file_path + "y_test.csv").squeeze()
 
 input_example = X_train[0:5]
 criterion_options = ['gini', 'entropy', 'log_loss']
@@ -66,14 +60,10 @@ def objective(params):
         y_pred = model.predict(X_test)
         y_train_pred = model.predict(X_train)
         y_train_proba = model.predict_proba(X_train)
-
-        res = classification_report(y_test,y_pred,output_dict=True)
         
         #get metrics
         metrics = {
             'accuracy': accuracy_score(y_test, y_pred),
-            'test_avg_f1_score': res['macro avg']['f1-score'],
-            'test_weighted_f1_score': res['weighted avg']['f1-score'],
             'DecisionTreeClassifier_score_X_test': model.score(X_test, y_test),
             'training_accuracy_score': accuracy_score(y_train, y_train_pred),
             'training_f1_score': f1_score(y_train, y_train_pred, average='micro'),
@@ -86,7 +76,7 @@ def objective(params):
 
         mlflow.log_params(params)
         mlflow.log_metrics(metrics)
-        return {'loss': -res['accuracy'], 'status': STATUS_OK}
+        return {'loss': -metrics['accuracy'], 'status': STATUS_OK}
 
 
 with mlflow.start_run() as run:
@@ -148,14 +138,10 @@ with mlflow.start_run() as run:
     y_pred = best_model.predict(X_test)
     y_train_pred = best_model.predict(X_train)
     y_train_proba = best_model.predict_proba(X_train)
-
-    res = classification_report(y_test,y_pred,output_dict=True)
     
     #get metrics
     metrics = {
         'accuracy': accuracy_score(y_test, y_pred),
-        'test_avg_f1_score': res['macro avg']['f1-score'],
-        'test_weighted_f1_score': res['weighted avg']['f1-score'],
         'DecisionTreeClassifier_score_X_test': best_model.score(X_test, y_test),
         'training_accuracy_score': accuracy_score(y_train, y_train_pred),
         'training_f1_score': f1_score(y_train, y_train_pred, average='micro'),
