@@ -80,8 +80,6 @@ def objective(params):
 
 
 with mlflow.start_run() as run:
-    mlflow.set_tag("mlflow.user", "Kirby")
-
     training_dataset: mlflow.data.pandas_dataset.PandasDataset = mlflow.data.from_pandas(
         df=X_train, 
         source=str(folder_path),

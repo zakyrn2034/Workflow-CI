@@ -47,7 +47,7 @@ jobs:
         git commit -m "Automated Update: Upload artifacts [skip ci]"
     - name: Build docker image
       run: |
-        mlflow models build-docker --model-uri "runs:/${{ env.RUN_ID }}/artifacts" --name "proyekmsmlstarclass"
+        mlflow models build-docker --model-uri "runs:/${{ env.RUN_ID }}/run_metadara" --name "proyekmsmlstarclass"
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
