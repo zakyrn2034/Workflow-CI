@@ -43,14 +43,19 @@ jobs:
     - name: Copy artifacts into working directory
       run: |
         mkdir -p ./artifacts
-        mlflow artifacts download -u runs:/${{ env.RUN_ID }} -d ./MLProject/artifacts
+        mlflow artifacts download -u runs:/$RUN_ID -d ./MLProject/artifacts
     - name: Upload artifacts to repo
       run: |
         git add .
         git commit -m "Automated Update: Upload artifacts [skip ci]"
     - name: Build docker image
       run: |
-        echo "Unfinished"
-    - name: Upload artifacts to repo
+        mlflow models build-docker --model-uri "runs:/$RUN_ID/model" --name "cc"
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    - name: Tag Docker Image
       run: |
-        echo "Unfinished"
+        docker tag proyekmsmlstarclass ${{ secrets.DOCKER_HUB_USERNAME }}/proyekmsmlstarclass:latest

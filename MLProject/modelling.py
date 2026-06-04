@@ -7,8 +7,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
 import sys
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
-
 #Set entrypoints
 arg_evals = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 arg_folder = sys.argv[2] if len(sys.argv) > 2 else "StellarClassification"
