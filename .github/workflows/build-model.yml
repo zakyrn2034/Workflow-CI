@@ -6,8 +6,8 @@ name: Build model
 on: workflow_dispatch
     
 env:
-  CSV_URL: "MLproject/train_pca.csv"
-  TARGET_VAR: "Credit_Score"
+  MAX_EVALS: 10
+  DATASET_FOLDER: "StellarClassification"
   
 permissions:
   contents: write
@@ -30,7 +30,7 @@ jobs:
     - name: Run MLflow
       run: |
         cd MLproject
-        mlflow run ./ --env-manager=local
+        mlflow run . --env-manager=local
     - name: Get latest MLflow run_id
       run: |
         RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
