@@ -3,7 +3,12 @@
 
 name: Build model
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
+    branch:
+      - main
+    
     
 env:
   MAX_EVALS: 10
@@ -35,9 +40,14 @@ jobs:
         RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
         echo "Latest run_id: $RUN_ID"
+    - name: Copy artifacts into working directory
+      run: |
+        mkdir -p ./artifacts
+        mlflow artifacts download -u runs:/${{RUN_ID}} -d ./MLProject/artifacts
     - name: Upload artifacts to repo
       run: |
-        echo "Unfinished"
+        git add .
+        git commit -m "Automated Update: Upload artifacts [skip ci]"
     - name: Build docker image
       run: |
         echo "Unfinished"

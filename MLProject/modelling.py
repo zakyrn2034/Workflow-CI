@@ -9,13 +9,11 @@ import sys
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
 
-mlflow.set_experiment("Stellar Classification Project")
-
 #Set entrypoints
-arg_evals = int(sys.argv[0]) if len(sys.argv) >= 1 else 10
-arg_folder = sys.argv[1] if len(sys.argv) > 1 else "StellarClassification"
+arg_evals = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+arg_folder = sys.argv[2] if len(sys.argv) > 2 else "StellarClassification"
 
-path = "./"
+path = "../"
 folder_path = path + arg_folder
 
 X_train = pd.read_csv(folder_path + "/X_train.csv")
