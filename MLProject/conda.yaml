@@ -12,5 +12,4 @@ dependencies:
   - scikit-learn==1.8.0
   - scipy==1.17.1
   - hyperopt==0.2.7
-  - joblib==1.5.3
 name: mlflow-env

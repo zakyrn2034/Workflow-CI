@@ -6,13 +6,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
-import joblib
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
 
 mlflow.set_experiment("Stellar Classification Project")
 
-path = "./MSMLGit/WorkflowCI/"
+path = "./"
 file_path = path + "StellarClassification/"
 
 X_train = pd.read_csv(file_path + "X_train.csv")
@@ -157,7 +156,12 @@ with mlflow.start_run() as run:
     mlflow.log_input(testing_dataset, context="validation")
 
     # Dumps model
-    joblib.dump(best_model,"run_best_model.joblib")
-    mlflow.log_artifact("run_best_model.joblib")
+    #joblib.dump(best_model,"run_best_model.joblib")
+    #mlflow.log_artifact("run_best_model.joblib")
+
+    mlflow.sklearn.log_model(
+        sk_model=best_model,
+        artifact_path="run_metadata",
+    )
 
     print(f'\n--- Finished Run ---\n')
