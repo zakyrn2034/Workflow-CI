@@ -43,7 +43,7 @@ jobs:
     - name: Copy artifacts into working directory
       run: |
         mkdir -p ./artifacts
-        mlflow artifacts download -u runs:/$RUN_ID -d ./MLProject/artifacts
+        mlflow artifacts download -u runs:/${{ env.RUN_ID }} -d ./MLProject/artifacts
     - name: Upload artifacts to repo
       run: |
         git add .
