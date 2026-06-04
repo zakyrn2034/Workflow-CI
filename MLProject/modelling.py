@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
+import os
 import sys
 
 #Set entrypoints
@@ -158,5 +159,9 @@ with mlflow.start_run() as run:
         sk_model=best_model,
         artifact_path="run_metadata",
     )
+
+    if "GITHUB_ENV" in os.environ:
+        with open(os.environ["GITHUB_ENV"], "a") as f:
+            f.write(f"RUN_ID={run.info.run_id}\n")
 
     print(f'\n--- Finished Run ---\n')
