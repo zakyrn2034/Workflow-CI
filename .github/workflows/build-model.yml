@@ -56,4 +56,7 @@ jobs:
     - name: Tag Docker Image
       run: |
         docker tag proyekmsmlstarclass ${{ secrets.DOCKER_HUB_USERNAME }}/proyekmsmlstarclass:latest
+    - name: Push Docker Image
+      run: |
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/proyekmsmlstarclass:latest
         
