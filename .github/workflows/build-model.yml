@@ -37,13 +37,13 @@ jobs:
         mlflow run MLProject --env-manager=local
     - name: Get latest MLflow run_id
       run: |
-        RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+        RUN_ID=$(ls -td mlruns/0/*/ | grep -oE '[a-f0-9]{32}' | head -n 1)
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
         echo "Latest run_id: $RUN_ID"
     - name: Copy artifacts into working directory
       run: |
         mkdir -p ./artifacts
-        mlflow artifacts download -u runs:/${{ env.RUN_ID }} -d ./MLProject/artifacts
+        mlflow artifacts download -r ${{ env.RUN_ID }} -d ./MLProject/artifacts
     - name: Upload artifacts to repo
       run: |
         git add .
