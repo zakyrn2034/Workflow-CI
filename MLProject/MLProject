@@ -5,6 +5,6 @@ conda_env: conda.yaml
 entry_points:
   main:
     parameters:
-      max_evals: {type: int, default: 10}
+      max_evals: {type: int, default: 3}
       dataset_folder : {type: string, default: "StellarClassification"}
     command: "python modelling.py {max_evals} {dataset_folder}"
