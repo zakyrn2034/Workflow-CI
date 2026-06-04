@@ -37,10 +37,7 @@ jobs:
         mlflow run MLProject --env-manager=local
     - name: Get latest MLflow run_id
       run: |
-        echo "===FILES==="
-        ls -R mlruns/0/
-        echo "==========="
-        RUN_ID=$(ls -td mlruns/0/*/ | grep -oE 'm-[a-f0-9]{32}' | head -n 1)
+        RUN_ID=$(ls -td mlruns/0/models/*/ | grep -oE 'm-[a-f0-9]{32}' | head -n 1)
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
         echo "Latest run_id: $RUN_ID"
     - name: Copy artifacts into working directory
@@ -62,3 +59,4 @@ jobs:
     - name: Tag Docker Image
       run: |
         docker tag proyekmsmlstarclass ${{ secrets.DOCKER_HUB_USERNAME }}/proyekmsmlstarclass:latest
+        
