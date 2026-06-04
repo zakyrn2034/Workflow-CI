@@ -1,0 +1,10 @@
+name: stellar_classification_CI
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      max_evals: {type: int, default: 10}
+      dataset_folder : {type: string, default: "StellarClassification"}
+    command: "python modelling.py {max_evals} {dataset_folder}"

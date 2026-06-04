@@ -5,18 +5,23 @@ import numpy as np
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
+import sys
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
 
 mlflow.set_experiment("Stellar Classification Project")
 
-path = "./"
-file_path = path + "StellarClassification/"
+#Set entrypoints
+arg_evals = int(sys.argv[0]) if len(sys.argv) >= 1 else 10
+arg_folder = sys.argv[1] if len(sys.argv) > 1 else "StellarClassification"
 
-X_train = pd.read_csv(file_path + "X_train.csv")
-X_test = pd.read_csv(file_path + "X_test.csv")
-y_train = pd.read_csv(file_path + "y_train.csv").squeeze()
-y_test = pd.read_csv(file_path + "y_test.csv").squeeze()
+path = "./"
+folder_path = path + arg_folder
+
+X_train = pd.read_csv(folder_path + "/X_train.csv")
+X_test = pd.read_csv(folder_path + "/X_test.csv")
+y_train = pd.read_csv(folder_path + "/y_train.csv").squeeze()
+y_test = pd.read_csv(folder_path + "/y_test.csv").squeeze()
 
 input_example = X_train[0:5]
 criterion_options = ['gini', 'entropy', 'log_loss']
@@ -82,13 +87,13 @@ with mlflow.start_run() as run:
 
     training_dataset: mlflow.data.pandas_dataset.PandasDataset = mlflow.data.from_pandas(
         df=X_train, 
-        source=str(file_path),
+        source=str(folder_path),
         name="stellar_classification_train"
     )
     
     testing_dataset: mlflow.data.pandas_dataset.PandasDataset = mlflow.data.from_pandas(
         df=X_test, 
-        source=str(file_path),
+        source=str(folder_path),
         name="stellar_classification_test"
     )
 
@@ -96,7 +101,7 @@ with mlflow.start_run() as run:
     best = fmin(fn=objective,
                 space=space,
                 algo=tpe.suggest,
-                max_evals=10,  # Jumlah evaluasi
+                max_evals=arg_evals,  # Jumlah evaluasi
                 trials=trials)
     
     # Log best params
