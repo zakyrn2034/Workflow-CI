@@ -1,9 +1,8 @@
 import mlflow
-from hyperopt import fmin, tpe, hp, Trials, STATUS_OK
+from hyperopt import fmin, space_eval, tpe, hp, Trials, STATUS_OK
 from hyperopt.pyll import scope
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, log_loss, roc_auc_score
 
@@ -101,7 +100,7 @@ with mlflow.start_run() as run:
                 trials=trials)
     
     # Log best params
-    best_params = {k: v[0] if isinstance(v, list) else v for k, v in trials.best_trial['misc']['vals'].items()}
+    best_params = space_eval(space,best)
     best_params = {
             'ccp_alpha': best_params.get('ccp_alpha', 0.0),
             'class_weight': best_params.get('class_weight', None),
@@ -117,11 +116,6 @@ with mlflow.start_run() as run:
             'random_state': best_params.get('random_state', None),
             'splitter': best_params.get('splitter', 'best')
         }
-    if 'criterion' in best_params and best_params['criterion'] is not None:
-        best_params['criterion'] = criterion_options[int(best_params['criterion'])]
-    for key in ['max_depth', 'min_samples_split']:
-        if key in best_params and best_params[key] is not None:
-            best_params[key] = int(best_params[key])
     mlflow.log_params(best_params)
 
     # Retrains best model (for metrics/artifact)
